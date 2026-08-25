@@ -27,6 +27,7 @@ import time
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 from mcp.server import Server  # noqa: E402
 from mcp.server.models import InitializationOptions  # noqa: E402
@@ -485,7 +486,13 @@ def configure_providers():
 
     # Check for custom API endpoint (Ollama, vLLM, etc.)
     custom_url = get_env("CUSTOM_API_URL")
-    if custom_url:
+    # Placeholder values from .env.example must be treated as unset (same
+    # convention as the API key checks above) and a malformed URL must not
+    if (
+        custom_url
+        and custom_url != "your_custom_api_url_here"
+        and urlparse(custom_url).scheme in ("http", "https")
+    ):
         # IMPORTANT: Always read CUSTOM_API_KEY even if empty
         # - Some providers (vLLM, LM Studio, enterprise APIs) require authentication
         # - Others (Ollama) work without authentication (empty key)
@@ -499,6 +506,8 @@ def configure_providers():
             logger.debug("Custom API key provided for authentication")
         else:
             logger.debug("No custom API key provided (using unauthenticated access)")
+    elif custom_url:
+        logger.warning(f"Ignoring CUSTOM_API_URL '{custom_url}': placeholder or invalid value (expected http/https URL)")
 
     # Register providers in priority order:
     # 1. Native APIs first (most direct and efficient)

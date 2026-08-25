@@ -308,6 +308,57 @@ class TestConfigureProvidersFunction:
             assert ProviderType.OPENROUTER in available
             assert ProviderType.CUSTOM in available
 
+    def test_configure_providers_ignores_placeholder_custom_url(self):
+        """Placeholder CUSTOM_API_URL from .env.example must be treated as unset.
+
+        Regression test: a parent process exporting .env.example values
+        (e.g. CUSTOM_API_URL=your_custom_api_url_here) crashed the server at
+        startup with ValueError from CustomProvider URL validation.
+        """
+        from server import configure_providers
+
+        with patch.dict(
+            os.environ,
+            {
+                "GEMINI_API_KEY": "test-key",
+                "CUSTOM_API_URL": "your_custom_api_url_here",
+                "CUSTOM_API_KEY": "your_custom_api_key_here",
+                "CUSTOM_MODEL_NAME": "your_custom_model_name_here",
+                # Clear other API keys
+                "OPENAI_API_KEY": "",
+                "OPENROUTER_API_KEY": "",
+            },
+            clear=True,
+        ):
+            configure_providers()
+
+            # Custom provider must NOT be registered from placeholder values
+            available = ModelProviderRegistry.get_available_providers()
+            assert ProviderType.CUSTOM not in available
+            assert ProviderType.GOOGLE in available
+
+    def test_configure_providers_ignores_invalid_custom_url_scheme(self):
+        """An invalid CUSTOM_API_URL must skip the custom provider, not crash startup."""
+        from server import configure_providers
+
+        with patch.dict(
+            os.environ,
+            {
+                "GEMINI_API_KEY": "test-key",
+                "CUSTOM_API_URL": "not-a-valid-url",
+                "CUSTOM_API_KEY": "",
+                # Clear other API keys
+                "OPENAI_API_KEY": "",
+                "OPENROUTER_API_KEY": "",
+            },
+            clear=True,
+        ):
+            configure_providers()
+
+            available = ModelProviderRegistry.get_available_providers()
+            assert ProviderType.CUSTOM not in available
+            assert ProviderType.GOOGLE in available
+
     def test_configure_providers_no_valid_keys(self):
         """Test configure_providers raises error when no valid API keys."""
         from server import configure_providers
