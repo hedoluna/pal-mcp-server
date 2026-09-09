@@ -257,9 +257,24 @@ class OpenAICompatibleProvider(ModelProvider):
     def client(self):
         """Lazy initialization of OpenAI client with security checks and timeout configuration."""
         if self._client is None:
+            import os
+
             import httpx
 
             proxy_env_vars = ["HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "http_proxy", "https_proxy", "all_proxy"]
+
+            # Patched locally 2026-08-24: read the proxy URL *before* suppressing the env
+            # vars below and pass it explicitly via httpx's singular `proxy=` kwarg (the
+            # correct API since httpx 0.28.0). The original code suppressed proxy env vars
+            # unconditionally to dodge an old httpx `proxies={}` dict-vs-string conflict,
+            # but that also silently breaks any network that requires a proxy to reach the
+            # internet at all (e.g. a corporate proxy) -- this network is one of those.
+            proxy_url = (
+                os.environ.get("HTTPS_PROXY")
+                or os.environ.get("https_proxy")
+                or os.environ.get("HTTP_PROXY")
+                or os.environ.get("http_proxy")
+            )
 
             with suppress_env_vars(*proxy_env_vars):
                 try:
@@ -285,6 +300,7 @@ class OpenAICompatibleProvider(ModelProvider):
                         http_client = httpx.Client(
                             timeout=timeout_config,
                             follow_redirects=True,
+                            proxy=proxy_url,
                         )
 
                     # Keep client initialization minimal to avoid proxy parameter conflicts
