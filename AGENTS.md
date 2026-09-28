@@ -110,3 +110,5 @@ Store API keys and provider URLs in `.env` or your MCP client config; never comm
 
 This project uses OpenWolf for context management. Read and follow .wolf/OPENWOLF.md every session. Check .wolf/cerebrum.md before generating code. Check .wolf/anatomy.md before reading files.
 <!-- openwolf:end -->
+
+Contesto progetto opzionale: consulta docs/agent-context/PROJECT_CONTEXT.md per dettagli specifici quando pertinenti.
