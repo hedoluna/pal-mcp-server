@@ -100,3 +100,13 @@ Install GitHub CLI: `brew install gh` (macOS) or visit https://cli.github.com fo
 
 ## Security & Configuration Tips
 Store API keys and provider URLs in `.env` or your MCP client config; never commit secrets or generated log artifacts. Use `run-server.sh` to regenerate environments and verify connectivity after dependency changes. When adding providers or tools, sanitize prompts and responses, document required environment variables in `docs/`, and update `claude_config_example.json` if new capabilities ship by default.
+
+@RTK.md
+
+<!-- openwolf:begin -->
+# OpenWolf
+
+@.wolf/OPENWOLF.md
+
+This project uses OpenWolf for context management. Read and follow .wolf/OPENWOLF.md every session. Check .wolf/cerebrum.md before generating code. Check .wolf/anatomy.md before reading files.
+<!-- openwolf:end -->
