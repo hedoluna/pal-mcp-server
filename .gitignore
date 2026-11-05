@@ -189,3 +189,13 @@ logs/
 /worktrees/
 test_simulation_files/
 .mcp.json
+
+# OpenWolf: indici e stato runtime rigenerabili, non dati condivisi
+.wolf/anatomy-index.json
+.wolf/_scan-state.json
+.wolf/token-ledger.json
+.wolf/cron-state.json
+.wolf/suggestions.json
+.wolf/designqc-report.json
+.wolf/hooks/_session.json
+.wolf/hooks/_precompact-snapshot.json
