@@ -112,3 +112,10 @@ This project uses OpenWolf for context management. Read and follow .wolf/OPENWOL
 <!-- openwolf:end -->
 
 Contesto progetto opzionale: consulta docs/agent-context/PROJECT_CONTEXT.md per dettagli specifici quando pertinenti.
+
+## Shared agent workflow
+
+- Choose Codex, Claude Code, OpenCode, or Pi for the project and task; use one lead agent and add a reviewer only for substantial, high-risk, or independently verifiable work.
+- Before editing, check `git status --short` and the project instructions. Preserve existing local changes; stage, commit, or push only when the task asks for it or otherwise authorizes it.
+- Run the narrowest relevant checks after changes and report the files changed, checks run, and any blocker.
+- Keep recurring project procedures in `.agents/skills/<name>/SKILL.md`; add a short `.claude/skills/<name>/SKILL.md` wrapper that points to it for Claude Code. Do not create a skill for a one-off task.

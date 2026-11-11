@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T13:31:11.399Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-01T13:30:21.641Z
 > Files: 562 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -10,7 +10,7 @@
 - `.gitattributes` — Git attributes (~124 tok)
 - `.gitignore` — Git ignore rules (~610 tok)
 - `.pre-commit-config.yaml` (~199 tok)
-- `AGENTS.md` — Repository Guidelines (~1326 tok)
+- `AGENTS.md` — Repository Guidelines (~1504 tok)
 - `CHANGELOG.md` — Change log (~11787 tok)
 - `claude_config_example.json` (~117 tok)
 - `CLAUDE.md` — Istruzioni locali per Claude Code (~12 tok)
