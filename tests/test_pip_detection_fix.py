@@ -6,6 +6,7 @@ and don't break existing functionality.
 
 import os
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -100,6 +101,7 @@ class TestPipDetectionFix:
         for pattern in expected_diagnostic_patterns:
             assert pattern in content, f"Enhanced diagnostic pattern '{pattern}' should be in script"
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="runs run-server.sh through bash; not applicable on Windows")
     def test_setup_env_file_does_not_create_bsd_backup(self, tmp_path):
         """Ensure setup_env_file avoids creating .env'' artifacts (BSD sed behavior)."""
         script_path = Path("./run-server.sh").resolve()

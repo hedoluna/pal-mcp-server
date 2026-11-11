@@ -2,6 +2,10 @@
 Tests for utility functions
 """
 
+import sys
+
+import pytest
+
 from utils import check_token_limit, estimate_tokens, read_file_content, read_files
 
 
@@ -29,6 +33,7 @@ class TestFileUtils:
         assert "Error: File does not exist" in content
         assert tokens > 0
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_read_file_content_dangerous_files_blocked(self):
         """Test that dangerous system files are blocked"""
         # /etc/passwd should be blocked as it's under /etc (dangerous path)

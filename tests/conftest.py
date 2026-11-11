@@ -192,6 +192,19 @@ def clear_model_restriction_env(monkeypatch):
 
 
 @pytest.fixture(autouse=True)
+def reset_provider_registry_after_test():
+    """Clear the shared provider registry after each test so providers configured by one test
+    (e.g. a Gemini provider restricted to one model) cannot leak into later tests."""
+
+    yield
+
+    import utils.model_restrictions as model_restrictions
+
+    # The restriction service is a cached singleton built from env vars; drop it so the next test rebuilds it.
+    model_restrictions._restriction_service = None
+
+
+@pytest.fixture(autouse=True)
 def disable_force_env_override(monkeypatch):
     """Default tests to runtime environment visibility unless they explicitly opt in."""
 

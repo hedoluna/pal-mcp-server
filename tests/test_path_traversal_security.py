@@ -14,7 +14,10 @@ Additionally, this fix properly handles home directory containers:
   and handled by is_home_directory_root() in resolve_and_validate_path()
 """
 
+import sys
 from pathlib import Path
+
+import pytest
 
 from utils.security_config import is_dangerous_path
 
@@ -22,12 +25,14 @@ from utils.security_config import is_dangerous_path
 class TestPathTraversalFix:
     """Test that subdirectories of dangerous system paths are blocked."""
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_exact_match_still_works(self):
         """Test that exact dangerous paths are still blocked."""
         assert is_dangerous_path(Path("/etc")) is True
         assert is_dangerous_path(Path("/usr")) is True
         assert is_dangerous_path(Path("/var")) is True
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_subdirectory_now_blocked(self):
         """Test that subdirectories of system paths are blocked (the fix)."""
         # These were allowed before the fix
@@ -36,6 +41,7 @@ class TestPathTraversalFix:
         assert is_dangerous_path(Path("/etc/hosts")) is True
         assert is_dangerous_path(Path("/var/log/auth.log")) is True
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_deeply_nested_blocked(self):
         """Test that deeply nested system paths are blocked."""
         assert is_dangerous_path(Path("/etc/ssh/sshd_config")) is True
@@ -66,6 +72,7 @@ class TestHomeDirectoryHandling:
     is_home_directory_root() in resolve_and_validate_path().
     """
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_home_container_blocked(self):
         """Test that /home itself is blocked."""
         assert is_dangerous_path(Path("/home")) is True
@@ -91,10 +98,12 @@ class TestHomeDirectoryHandling:
 class TestRegressionPrevention:
     """Regression tests for the specific vulnerability."""
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_etc_passwd_blocked(self):
         """Test /etc/passwd is blocked (common attack target)."""
         assert is_dangerous_path(Path("/etc/passwd")) is True
 
+    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX absolute paths (/etc, /home) are not absolute on Windows")
     def test_etc_shadow_blocked(self):
         """Test /etc/shadow is blocked (password hashes)."""
         assert is_dangerous_path(Path("/etc/shadow")) is True

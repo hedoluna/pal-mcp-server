@@ -43,7 +43,8 @@ INTERNAL_DEFAULTS: dict[str, CLIInternalDefaults] = {
         parser="gemini_json",
         additional_args=["--print", "--output-format", "json"],
         default_role_prompt="systemprompts/clink/default.txt",
-    ),    "claude": CLIInternalDefaults(
+    ),
+    "claude": CLIInternalDefaults(
         parser="claude_json",
         additional_args=["--print", "--output-format", "json"],
         default_role_prompt="systemprompts/clink/default.txt",
